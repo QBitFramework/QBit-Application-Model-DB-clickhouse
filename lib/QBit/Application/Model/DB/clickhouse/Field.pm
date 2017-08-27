@@ -5,13 +5,13 @@ use qbit;
 use base qw(QBit::Application::Model::DB::Field);
 
 our %DATA_TYPES = (
-    Date        => 'EMPTY',
-    UInt8       => 'EMPTY',
-    UInt32      => 'EMPTY',
-    UInt64      => 'EMPTY',
-    Enum8       => 'ENUM',
-    Enum16      => 'ENUM',
-    FixedString => 'STRING'
+    Date        => {field_type => 'EMPTY',  quote_type => 'STRING',},
+    UInt8       => {field_type => 'EMPTY',  quote_type => 'NUMBER',},
+    UInt32      => {field_type => 'EMPTY',  quote_type => 'NUMBER',},
+    UInt64      => {field_type => 'EMPTY',  quote_type => 'NUMBER',},
+    Enum8       => {field_type => 'ENUM',   quote_type => 'STRING',},
+    Enum16      => {field_type => 'ENUM',   quote_type => 'STRING',},
+    FixedString => {field_type => 'STRING', quote_type => 'STRING',},
 );
 
 our %FIELD2STR = (
@@ -33,20 +33,10 @@ our %FIELD2STR = (
     },
 );
 
-our %QUOTE_TYPE = (
-    Date        => 'STRING',
-    UInt8       => 'NUMBER',
-    UInt32      => 'NUMBER',
-    UInt64      => 'NUMBER',
-    Enum8       => 'STRING',
-    Enum16      => 'STRING',
-    FixedString => 'STRING'
-);
-
 sub create_sql {
     my ($self) = @_;
 
-    return $FIELD2STR{$DATA_TYPES{$self->type}}($self);
+    return $FIELD2STR{$DATA_TYPES{$self->type}->{'field_type'}}($self);
 }
 
 sub init_check {
@@ -60,9 +50,11 @@ sub init_check {
 
 sub quote {
     my ($self, $value) = @_;
-    #TODO: rewrite on C++
+    #TODO: rewrite(C++)
 
-    if ($QUOTE_TYPE{$self->type} eq 'STRING') {
+    return 'NULL' unless defined($value);
+
+    if ($DATA_TYPES{$self->type}->{'quote_type'} eq 'STRING') {
         $value =~ s/\\/\\\\/g;
         $value =~ s/'/\\'/g;
 

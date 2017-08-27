@@ -57,15 +57,32 @@ sub execute {
         return undef;
     }
 
-    my $res = from_json($content || '{}')->{'data'};
+    my $result;
+    try {
+        my $res = from_json($content || '{}');
 
-    return $self->result($res);
+        print "$content\n";
+
+        $self->result($res);
+
+        $result = $res->{'data'} // TRUE;
+
+        $self->dbi->{'__FOUND_ROWS__'} = $res->{'rows_before_limit_at_least'} // 0;
+
+        #TODO: total
+    }
+    catch {
+        $self->dbi->err('CH3');
+        $self->errstr(shift->message);
+    };
+
+    return $result;
 }
 
 sub fetchall_arrayref {
     my ($self, $attr) = @_;
 
-    return $self->result();
+    return $self->result->{'data'} // TRUE;
 }
 
 #STH interface

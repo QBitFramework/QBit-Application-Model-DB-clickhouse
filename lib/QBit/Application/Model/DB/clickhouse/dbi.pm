@@ -39,11 +39,11 @@ sub do {
 
     my $sth = $self->prepare($sql);
 
-    #TODO: set errors in dbi, see _do
+    my $res = $sth->execute(@params);
 
-    return $sth->execute(@params);
+    $self->errstr($sth->errstr()) unless $res;
+
+    return $res;
 }
-
-#sub errstr {throw 'It should never happen - error happened in prepare. Fix this it'}
 
 TRUE;

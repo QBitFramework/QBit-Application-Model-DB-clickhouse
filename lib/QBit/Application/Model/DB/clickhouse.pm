@@ -86,7 +86,9 @@ sub quote_identifier {"`$_[1]`"}
 
 sub quote {
     my ($self, $name) = @_;
-    #TODO: rewrite on C++
+    #TODO: rewrite(C++)
+
+    return 'NULL' unless defined($name);
 
     unless (looks_like_number($name)) {
         my $quote = $name;
