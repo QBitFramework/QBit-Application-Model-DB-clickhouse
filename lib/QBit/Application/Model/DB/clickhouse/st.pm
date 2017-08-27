@@ -4,48 +4,60 @@ use qbit;
 
 use base qw(QBit::Class);
 
-__PACKAGE__->mk_ro_accessors(qw(request lwp sql db));
+__PACKAGE__->mk_ro_accessors(qw(request lwp sql dbi));
 
-__PACKAGE__->mk_accessors(qw(result));
+__PACKAGE__->mk_accessors(qw(result errstr));
 
 sub execute {
     my ($self, @params) = @_;
 
-    #TODO: check modifie, may be need clone
     my $sql = $self->sql;
 
+    unless (defined($sql)) {
+        $self->dbi->err('CH1');
+        $self->errstr(gettext('Statement not found'));
+
+        return undef;
+    }
+
     if (@params) {
-        $sql =~ s/\?/$self->db->quote($_)/e foreach @params;
+        my $db = $self->dbi->db;
+
+        my $i = 0;
+        while ($sql =~ s/\?/$db->quote($params[$i])/) {
+            $i++;
+        }
+
+        if ($i != @params) {
+            $self->dbi->err('CH1');
+            $self->errstr(gettext('Placeholders(?): %d, parameters: %d', $i, scalar(@params)));
+
+            return undef;
+        }
     }
 
     my $request = $self->request;
     $request->content($sql);
 
-    my ($response, $res);
-    try {
-        $response = $self->lwp->request($request);
+    my $response = $self->lwp->request($request);
 
-        unless ($response->is_success) {
-            my $error = $response->decoded_content;
+    my $content = $response->decoded_content;
 
-            if ($response->code == 500 && $error =~ /^Code:\s+(\d+)/) {
-                throw Exception::DB $error, errorcode => $1;
-            } elsif ($response->code == 500) {
-                throw Exception::DB $error, errorcode => -1;
-            } else {
-                throw Exception::DB $error, errorcode => $response->code;
-            }
+    unless ($response->is_success) {
+        $self->errstr($content);
+
+        if ($response->code == 500 && $content =~ /^Code:\s+(\d+)/) {
+            $self->dbi->err($1);
+        } elsif ($response->code == 500) {
+            $self->dbi->err('CH2');
+        } else {
+            $self->dbi->err($response->code);
         }
 
-        $res = from_json($response->decoded_content || '{}')->{'data'};
+        return undef;
     }
-    catch {
-        my ($exception) = shift;
 
-        throw $exception if $exception->isa('Exception::DB');
-
-        throw Exception::DB $exception->message, errorcode => -2;
-    };
+    my $res = from_json($content || '{}')->{'data'};
 
     return $self->result($res);
 }
@@ -58,6 +70,6 @@ sub fetchall_arrayref {
 
 #STH interface
 
-sub finish {}
+sub finish { }
 
 TRUE;

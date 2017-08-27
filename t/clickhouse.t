@@ -12,6 +12,8 @@ my $app = App->new();
 
 $app->pre_run();
 
+#$app->clickhouse->begin();
+
 my $query = $app->clickhouse->query->select(
     table  => $app->clickhouse->stat,
     alias  => 't1',

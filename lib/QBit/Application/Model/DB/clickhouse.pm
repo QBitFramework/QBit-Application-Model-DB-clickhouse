@@ -4,7 +4,7 @@ use qbit;
 
 use base qw(QBit::Application::Model::DB);
 
-use QBit::Application::Model::DB::clickhouse::db;
+use QBit::Application::Model::DB::clickhouse::dbi;
 use QBit::Application::Model::DB::clickhouse::Table;
 use QBit::Application::Model::DB::clickhouse::Query;
 use QBit::Application::Model::DB::Filter;
@@ -13,6 +13,14 @@ use Exception::DB;
 eval {require Exception::DB::DuplicateEntry};
 
 __PACKAGE__->model_accessors(clickhouse => 'QBit::Application::Model::API::Yandex::ClickHouse',);
+
+BEGIN {
+    no strict 'refs';
+
+    foreach my $method (qw(begin commit rollback transaction)) {
+        *{__PACKAGE__ . "::$method"} = sub {throw gettext('Method "%s" not supported', $method)}
+    }
+}
 
 my $REQUEST;
 
@@ -50,26 +58,28 @@ sub _get_table_class {
     return $table_class;
 }
 
-sub get_dbh {
-    $_[0]->{'__DBH__'}{$$};
-}
-
 sub _connect {
     my ($self, %opts) = @_;
 
-    if (!defined($self->get_dbh())) {
-        foreach (qw(host port database)) {
-            $opts{$_} //= $self->get_option($_);
+    unless (defined($self->dbh())) {
+        foreach (qw(host port database user password)) {
+            $opts{$_} //= $self->get_option($_, '');
         }
 
-        $self->{'__DBH__'}{$$} = QBit::Application::Model::DB::clickhouse::db->new(%opts, timeout => $self->get_option('timeout', 300), db => $self);
+        $self->set_dbh(
+            QBit::Application::Model::DB::clickhouse::dbi->new(
+                %opts,
+                timeout => $self->get_option('timeout', 300),
+                db      => $self
+            )
+        );
     }
 }
 
 sub _is_connection_error {
     my ($self, $code) = @_;
 
-    return !!grep {$code == $_} qw(-1);
+    return !!grep {$code eq $_} qw(CH2);
 }
 
 sub quote_identifier {"`$_[1]`"}
@@ -80,6 +90,7 @@ sub quote {
 
     unless (looks_like_number($name)) {
         my $quote = $name;
+        $quote =~ s/\\/\\\\/g;
         $quote =~ s/'/\\'/g;
 
         return "'$quote'";

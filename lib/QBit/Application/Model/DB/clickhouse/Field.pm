@@ -63,6 +63,7 @@ sub quote {
     #TODO: rewrite on C++
 
     if ($QUOTE_TYPE{$self->type} eq 'STRING') {
+        $value =~ s/\\/\\\\/g;
         $value =~ s/'/\\'/g;
 
         return "'$value'";
