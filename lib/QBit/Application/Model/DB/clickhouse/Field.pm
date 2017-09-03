@@ -65,3 +65,105 @@ sub quote {
 }
 
 TRUE;
+
+__END__
+
+=encoding utf8
+
+=head1 Name
+
+QBit::Application::Model::DB::clickhouse::Field - Class for ClickHouse fields.
+
+=head1 Description
+
+Implements work with ClickHouse fields.
+
+=head1 Field types
+
+=head2 Supported types
+
+=over
+
+=item
+
+Date
+
+=item
+
+UInt8
+
+=item
+
+UInt32
+
+=item
+
+UInt64
+
+=item
+
+Enum8
+
+=item
+
+Enum16
+
+=item
+
+FixedString
+
+=back
+
+=head1 Package methods
+
+=head2 create_sql
+
+Generate and returns a sql for field.
+
+B<No arguments.>
+
+B<Return values:>
+
+=over
+
+=item
+
+B<$sql> - string
+
+=back
+
+=head2 quote
+
+B<Arguments:>
+
+=over
+
+=item
+
+B<$value> - scalar
+
+=back
+
+B<Return values:>
+
+=over
+
+=item
+
+B<$value> - scalar
+
+=back
+
+B<Example:>
+
+  my $value = $field->quote("it's ok"); # "'it\'s ok'"
+  $value = $field->quote(12); # 12
+  $value = $field->quote(undef); # 'NULL'
+
+=head2 init_check
+
+Check options for field.
+
+B<No arguments.>
+
+=cut

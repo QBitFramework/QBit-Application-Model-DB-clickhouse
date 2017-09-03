@@ -51,7 +51,7 @@ sub execute {
         } elsif ($response->code == 500) {
             $self->dbi->err('CH2');
         } else {
-            $self->dbi->err($response->code);
+            $self->dbi->err('HTTP' . $response->code);
         }
 
         return undef;
@@ -60,8 +60,6 @@ sub execute {
     my $result;
     try {
         my $res = from_json($content || '{}');
-
-        print "$content\n";
 
         $self->result($res);
 
@@ -87,6 +85,82 @@ sub fetchall_arrayref {
 
 #STH interface
 
-sub finish { }
+sub finish {TRUE}
 
 TRUE;
+
+__END__
+
+=encoding utf8
+
+=head1 Name
+
+QBit::Application::Model::DB::clickhouse::st - Class for ClickHouse sth.
+
+=head1 Description
+
+Implements sth methods for ClickHouse driver.
+
+=head1 Package methods
+
+=head2 execute
+
+B<Arguments:>
+
+=over
+
+=item *
+
+B<@params> - array (parameters to binding). Optional
+
+=back
+
+B<Return values:>
+
+=over
+
+=item
+
+B<$result> - perl structure or undef
+
+=back
+
+B<Example:>
+
+  $sth = $dbh->prepare('INSERT INTO `state` (`date`, `hits`) VALUES (?, ?)');
+
+  my $result = $sth->execute("2017-09-03", 13) or die $dbh->err() . ': ' . $sth->errstr();
+
+=head2 fetchall_arrayref
+
+B<Arguments:>
+
+=over
+
+=item *
+
+B<$attr> - hash ref (attributes). Optional
+
+=back
+
+B<Return values:>
+
+=over
+
+=item
+
+B<$result> - perl structure or undef
+
+=back
+
+B<Example:>
+
+  my $result = $sth->fetchall_arrayref({});
+
+=head2 finish
+
+B<No arguments.>
+
+STH interface. Always returns true
+
+=cut

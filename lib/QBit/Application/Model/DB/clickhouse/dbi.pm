@@ -47,3 +47,114 @@ sub do {
 }
 
 TRUE;
+
+__END__
+
+=encoding utf8
+
+=head1 Name
+
+QBit::Application::Model::DB::clickhouse::dbi - Class for ClickHouse DBI.
+
+=head1 Description
+
+Implements dbi methods for ClickHouse driver.
+
+=head1 Package methods
+
+=head2 new
+
+B<Arguments:>
+
+=over
+
+=item *
+
+B<%opts> - connection options: host, port, database, user, password, timeout, db(QBit::Application::Model::DB::clickhouse)
+
+=back
+
+B<Return values:>
+
+=over
+
+=item
+
+B<$dbh> - object (QBit::Application::Model::DB::clickhouse::dbi)
+
+=back
+
+B<Example:>
+
+  my $dbh = QBit::Application::Model::DB::clickhouse::dbi->new(
+      host     => '127.0.0.1',
+      port     => 8123,
+      database => 'default',
+      user     => 'default',
+      password => '',
+      timeout  => 300,
+      db       => $app->clickhouse
+  );
+
+=head2 prepare
+
+B<Arguments:>
+
+=over
+
+=item *
+
+B<$sql> - string (SQL)
+
+=back
+
+B<Return values:>
+
+=over
+
+=item
+
+B<$sth> - object (QBit::Application::Model::DB::clickhouse::st)
+
+=back
+
+B<Example:>
+
+  my $sth = $dbh->prepare('SELECT 1');
+
+=head2 do
+
+B<Arguments:>
+
+=over
+
+=item *
+
+B<$sql> - string (SQL)
+
+=item *
+
+B<$attr> - hash ref (additional attributes)
+
+=item *
+
+B<@params> - array (parameters to binding)
+
+=back
+
+B<Return values:>
+
+=over
+
+=item
+
+B<$boolean> - (true on success; false otherwise)
+
+=back
+
+B<Example:>
+
+  $dbh->do('INSERT INTO `state` (`date`, `hits`) VALUES ("2017-09-03", 35)')
+    or die $dbh->err() . ': ' . $dbh->errstr();
+
+=cut

@@ -25,9 +25,9 @@ BEGIN {
 my $REQUEST;
 
 sub query {
-    my ($self) = @_;
+    my ($self, %opts) = @_;
 
-    return QBit::Application::Model::DB::clickhouse::Query->new(db => $self);
+    return QBit::Application::Model::DB::clickhouse::Query->new(db => $self, %opts);
 }
 
 sub filter {
@@ -110,3 +110,145 @@ sub _get_all {
 }
 
 TRUE;
+
+__END__
+
+=encoding utf8
+
+=head1 Name
+
+QBit::Application::Model::DB::clickhouse - Class for working with ClickHouse DB.
+
+=head1 Description
+
+Class for working with ClickHouse DB. It's not ORM.
+
+=head1 GitHub
+
+https://github.com/QBitFramework/QBit-Application-Model-DB-clickhouse
+
+=head1 Install
+
+=over
+
+=item *
+
+cpanm QBit::Application::Model::DB::clickhouse
+
+=item *
+
+apt-get install libqbit-application-model-db-clickhouse-perl (http://perlhub.ru/)
+
+=back
+
+B<Example:>
+
+  __PACKAGE__->meta(
+      tables => {
+          stat => {
+              fields => [
+                  {name => 'date', type => 'Date',},
+                  {name => 'hits', type => 'UInt32',},
+              ],
+              engine => {MergeTree => ['date', [',' => ['date', 'hits']], \8192]}
+          },
+      },
+  );
+
+=head1 Package methods
+
+=head2 filter
+
+B<Arguments:>
+
+=over
+
+=item *
+
+B<$filter> - filter (perl variables)
+
+=item *
+
+B<%opts> - additional options
+
+=over
+
+=item *
+
+B<type> - type (AND/OR NOT)
+
+=back
+
+=back
+
+B<Return values:>
+
+=over
+
+=item
+
+B<$filter> - object (QBit::Application::Model::DB::Filter)
+
+=back
+
+B<Example:>
+
+  my $filter = $app->clickhouse->filter([id => '=' => \23]);
+
+=head2 query
+
+B<Arguments:>
+
+=over
+
+=item
+
+B<%hash> - options
+
+=over
+
+=item
+
+without_table_alias - boolean(default: false)
+
+=back
+
+=back
+
+B<Return values:>
+
+=over
+
+=item
+
+B<$query> - object (QBit::Application::Model::DB::clickhouse::Query)
+
+=back
+
+B<Example:>
+
+  my $table = $app->clickhouse->stat;
+
+  my $query = $app->clickhouse->query();
+  $query->_field_to_sql(undef, 'hits', $table); # `stat`.`hits`
+
+  my $query2 = $app->clickhouse->query(without_table_alias => TRUE);
+  $query->_field_to_sql(undef, 'hits', $table); # `hits`
+
+=head1 Internal packages
+
+=over
+
+=item B<L<QBit::Application::Model::DB::clickhouse::Field>> - class for ClickHouse fields;
+
+=item B<L<QBit::Application::Model::DB::clickhouse::Query>> - class for ClickHouse queries;
+
+=item B<L<QBit::Application::Model::DB::clickhouse::Table>> - class for ClickHouse tables;
+
+=item B<L<QBit::Application::Model::DB::clickhouse::dbi>> - class for ClickHouse DBI;
+
+=item B<L<QBit::Application::Model::DB::clickhouse::st>> - class for ClickHouse sth;
+
+=back
+
+=cut
