@@ -12,8 +12,6 @@ use QBit::Application::Model::DB::Filter;
 use Exception::DB;
 eval {require Exception::DB::DuplicateEntry};
 
-__PACKAGE__->model_accessors(clickhouse => 'QBit::Application::Model::API::Yandex::ClickHouse',);
-
 BEGIN {
     no strict 'refs';
 
