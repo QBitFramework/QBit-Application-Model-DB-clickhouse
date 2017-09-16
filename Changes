@@ -1,10 +1,32 @@
 ==================================================
-Changes from 2016-09-03 00:00:00 +0000 to present.
+Changes from 2016-09-16 00:00:00 +0000 to present.
 ==================================================
 
 ------------------------------------------
-version 0.001 at 2017-09-03 19:06:08 +0000
+version 0.002 at 2017-09-16 10:10:09 +0000
 ------------------------------------------
+
+  Change: 63a8b112e4dbb8dc5ae612c946471f12373fd032
+  Author: Igor Sverdlov <igor-sverdlov@mail.ru>
+  Date : 2017-09-16 13:09:07 +0000
+
+    added TestTimeLog 
+
+  Change: 9d2d7f884e02475fdf16acff5fded3c639f03bb1
+  Author: Igor Sverdlov <igor-sverdlov@mail.ru>
+  Date : 2017-09-16 12:53:37 +0000
+
+    fix depends and delete accessors 
+
+------------------------------------------
+version 0.001 at 2017-09-03 19:06:23 +0000
+------------------------------------------
+
+  Change: 961e4feca6491f3aba7ef66c816b4736173af358
+  Author: Igor Sverdlov <igor-sverdlov@mail.ru>
+  Date : 2017-09-03 22:06:23 +0000
+
+    Version 0.001 
 
   Change: 5572b50ac4929e8c414da1a17b0073cd8f152f4c
   Author: Igor Sverdlov <igor-sverdlov@mail.ru>
