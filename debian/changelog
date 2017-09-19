@@ -1,3 +1,9 @@
+libqbit-application-model-db-clickhouse-perl (0.004) raring; urgency=low
+
+  * get_dbh -> dbh
+
+ -- Igor Sverdlov <igor-sverdlov@mail.ru>  Tue, 19 Sep 2017 10:03:31 +0300
+
 libqbit-application-model-db-clickhouse-perl (0.003) raring; urgency=low
 
   * use query in add

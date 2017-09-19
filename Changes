@@ -1,10 +1,26 @@
 ==================================================
-Changes from 2016-09-17 00:00:00 +0000 to present.
+Changes from 2016-09-19 00:00:00 +0000 to present.
 ==================================================
 
 ------------------------------------------
-version 0.003 at 2017-09-17 16:45:30 +0000
+version 0.004 at 2017-09-19 07:03:30 +0000
 ------------------------------------------
+
+  Change: 3bf583664293174ec84c43618482940a6073e4d2
+  Author: Igor Sverdlov <igor-sverdlov@mail.ru>
+  Date : 2017-09-19 10:01:57 +0000
+
+    get_dbh -> dbh 
+
+------------------------------------------
+version 0.003 at 2017-09-17 16:45:53 +0000
+------------------------------------------
+
+  Change: d2291ccf9a555d2636ca6eda03ec40da134e7fd4
+  Author: Igor Sverdlov <igor-sverdlov@mail.ru>
+  Date : 2017-09-17 19:45:53 +0000
+
+    Version 0.003 
 
   Change: c3701fec1d1b4ae1fa78777405c4ed703074eed2
   Author: Igor Sverdlov <igor-sverdlov@mail.ru>
