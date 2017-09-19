@@ -37,7 +37,7 @@ sub filter {
 sub _create_sql_db {
     my ($self) = @_;
 
-    return 'CREATE DATABASE ' . $self->get_dbh()->quote_identifier($self->get_option('database'));
+    return 'CREATE DATABASE ' . $self->dbh->quote_identifier($self->get_option('database'));
 }
 
 sub _get_table_class {
