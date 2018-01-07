@@ -148,7 +148,7 @@ B<Example:>
                   {name => 'date', type => 'Date',},
                   {name => 'hits', type => 'UInt32',},
               ],
-              engine => {MergeTree => ['date', [',' => ['date', 'hits']], \8192]}
+              engine => {MergeTree => ['date', {'' => ['date', 'hits']}, \8192]}
           },
       },
   );
