@@ -15,6 +15,8 @@ __PACKAGE__->mk_accessors(qw(err errstr));
 
 sub init {
     my ($self) = @_;
+    
+    weaken($self->db);
 
     $self->{'__REQUEST__'} =
       HTTP::Request->new(
