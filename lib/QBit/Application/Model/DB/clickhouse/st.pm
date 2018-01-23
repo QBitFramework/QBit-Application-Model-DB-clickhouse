@@ -24,9 +24,7 @@ sub execute {
         my $db = $self->dbi->db;
 
         my $i = 0;
-        while ($sql =~ s/\?/$db->quote($params[$i])/) {
-            $i++;
-        }
+        $sql =~ s/\?/$db->quote($params[$i++])/eg;
 
         if ($i != @params) {
             $self->dbi->err('CH1');
